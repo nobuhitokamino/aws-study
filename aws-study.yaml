@@ -7,7 +7,7 @@ Parameters:
 
   MyIpAddress:
     Type: String
-    Description: Your IP Address
+    Description: Your IP Address (example:1.2.3.4/32)
 
   DBUsername:
     Type: String
@@ -219,14 +219,13 @@ Resources:
       Tags:
         - Key: Name
           Value: aws-study-alb
-        
 
   MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: aws-study-alb-targetgroup
       VpcId: !Ref MyVPC
-      Port: 80
+      Port: 8080
       Protocol: HTTP
       TargetType: instance
       HealthyThresholdCount: 2
@@ -242,8 +241,8 @@ Resources:
         - Key: Name
           Value: aws-study-alb-targetgroup
       Targets:
-      - Id: !Ref MyEC2Instance
-        Port: 8080
+        - Id: !Ref MyEC2Instance
+          Port: 8080    
 
   MyListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -268,6 +267,8 @@ Resources:
 
   MyRDS:
     Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
     Properties:
       DBName: awsstudy
       Engine: mysql
