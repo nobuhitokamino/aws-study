@@ -7,6 +7,6 @@ variable "vpc_id" {
 # variable "instance_id" {
 #   type = string
 # }
-variable "asg_name" {
-  type = string
-}
+# variable "asg_name" {
+#   type = string
+# }

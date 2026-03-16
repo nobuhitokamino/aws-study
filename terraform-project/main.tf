@@ -118,7 +118,7 @@ module "alb" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.public_subnet_ids
   # instance_id = module.ec2.instance_id
-  asg_name = module.asg.asg_name
+  # asg_name = module.asg.asg_name
 }
 ####################
 # ALB Attachment
