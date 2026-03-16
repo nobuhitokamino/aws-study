@@ -4,6 +4,10 @@ Parameters:
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
 
+  MyIpAddress:
+    Type: String
+    Description: Your IP Address (example:1.2.3.4/32)  
+
 Resources:
 
 # -----------------
@@ -108,7 +112,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref MyIpAddress
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
