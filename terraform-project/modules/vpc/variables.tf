@@ -1,12 +1,10 @@
 variable "vpc_cidr" {
-  type = string
-}
-variable "vpc_id" {
-  description = "既存のVPCを使う場合のみ使用"
+  description = "VPC全体に割り当てるCIDRブロック（例: 10.0.0.0/16）"
   type        = string
-  default     = null
 }
+
 variable "public_subnets" {
+  description = "インターネット接続用のパブリックサブネット定義（キー名任意、CIDRとAZを指定）"
   type = map(object({
     cidr = string
     az   = string
@@ -14,6 +12,7 @@ variable "public_subnets" {
 }
 
 variable "private_subnets" {
+  description = "アプリケーションやデータベース用のプライベートサブネット定義（キー名任意、CIDRとAZを指定）"
   type = map(object({
     cidr = string
     az   = string

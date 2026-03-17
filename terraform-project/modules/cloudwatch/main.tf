@@ -18,7 +18,7 @@ resource "aws_sns_topic_subscription" "terra_subsc" {
 # CloudWatch alarm
 ############################
 resource "aws_cloudwatch_metric_alarm" "terra_alarm" {
-  alarm_name          = "terraform-test-alarm"
+  alarm_name          = var.alarm_name
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "CPUUtilization"
@@ -42,7 +42,7 @@ resource "aws_cloudwatch_metric_alarm" "terra_alarm" {
 ########################
 data "aws_region" "current" {}
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "my-dashboard"
+  dashboard_name = var.dashboard_name
 
   dashboard_body = jsonencode({
     widgets = [
@@ -83,7 +83,7 @@ resource "aws_cloudwatch_dashboard" "main" {
               "AWS/WAFV2",
               "BlockedRequests",
               "WebACL",
-              "aws-study-acl",
+              var.waf_name,
               "Rule",
               "ALL",
             ]
@@ -105,12 +105,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           region = data.aws_region.current.id
           title  = "WAF Logs"
 
-          # logGroupNames = [
-          #   "aws-waf-logs-sample-webacl"
-          # ]
-          # queryString = "fields @timestamp, action, httpRequest.clientIp, httpRequest.uri | sort @timestamp desc | limit 20"
-
-          query = "SOURCE 'aws-waf-logs-sample-webacl' | fields @timestamp, action, httpRequest.clientIp, httpRequest.uri | sort @timestamp desc | limit 20"
+          query = "SOURCE '${var.waf_log_group_name}' | fields @timestamp, action, httpRequest.clientIp, httpRequest.uri | sort @timestamp desc | limit 20"
 
           view = "table"
         }

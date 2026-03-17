@@ -17,9 +17,9 @@ module "vpc" {
 
 }
 
-###########################
-# EC2 SecurityGroup
-###########################
+###########################################
+# EC2 SecurityGroup ASGモジュール作成時に使用
+###########################################
 resource "aws_security_group" "ec2_sg" {
 
   name   = "ec2-sg"
@@ -63,7 +63,9 @@ module "rds" {
 
   web_sg_id = aws_security_group.ec2_sg.id
 
+  # EC2モジュールで作成するときに使用
   # web_sg_id = module.ec2.web_sg_id
+
   db_username = var.db_username
   db_password = var.db_password
 
@@ -89,9 +91,9 @@ module "asg" {
 
 }
 
-################################
-# EC2 Module
-################################
+##################################
+# EC2 Module でEC2作成するときに使用
+##################################
 
 # module "ec2" {
 
@@ -113,16 +115,18 @@ module "asg" {
 # ALB Module
 ######################
 module "alb" {
-  source = "./modules/alb"
-
+  source     = "./modules/alb"
+  alb_name   = var.alb_name
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.public_subnet_ids
+
+  # EC2モジュールで作成するときに使用
   # instance_id = module.ec2.instance_id
-  # asg_name = module.asg.asg_name
+
 }
-####################
-# ALB Attachment
-####################
+##############################################
+# ALB Attachment EC2モジュールで作成するときに使用
+##############################################
 
 # resource "aws_lb_target_group_attachment" "alb_tg" {
 
@@ -137,7 +141,9 @@ module "alb" {
 module "waf" {
   source = "./modules/waf"
 
-  resource_arn = module.alb.alb_arn
+  resource_arn       = module.alb.alb_arn
+  waf_name           = var.waf_name
+  waf_log_group_name = var.waf_log_group_name
 }
 
 #######################
@@ -146,7 +152,11 @@ module "waf" {
 module "cloudwatch" {
   source = "./modules/cloudwatch"
 
+  # EC2モジュールで作成時に使用
   # instance_id        = module.ec2.instance_id
   asg_name           = module.asg.asg_name
   notification_email = var.notification_email
+  alarm_name         = var.alb_name
+  waf_name           = module.waf.web_acl_name
+  waf_log_group_name = module.waf.waf_log_group_name
 }

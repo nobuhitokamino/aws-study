@@ -4,7 +4,8 @@ output "alb_sg_id" {
 
 }
 output "alb_dns_name" {
-  value = aws_lb.alb_terra.dns_name
+  description = "作成したALBのDNS名"
+  value       = aws_lb.alb_terra.dns_name
 }
 output "alb_arn" {
   value = aws_lb.alb_terra.arn

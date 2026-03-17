@@ -23,9 +23,9 @@ resource "aws_security_group" "alb_sg" {
   }
 
 }
-##########################
-# ALB attachment
-##########################
+###########################################
+# ALB attachment　EC2モジュールで作成する場合使用
+###########################################
 # resource "aws_lb_target_group_attachment" "alb_tg" {
 #   target_group_arn = aws_lb_target_group.alb_tg.arn
 #   target_id        = var.instance_id
@@ -36,14 +36,14 @@ resource "aws_security_group" "alb_sg" {
 ###########################
 resource "aws_lb_target_group" "alb_tg" {
   name     = "alb-tg"
-  port     = 8080
+  port     = var.target_port
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 
   health_check {
 
     path                = "/"
-    port                = "8080"
+    port                = var.target_port
     protocol            = "HTTP"
     interval            = 10
     timeout             = 5
@@ -59,7 +59,7 @@ resource "aws_lb_target_group" "alb_tg" {
 ###########################
 resource "aws_lb_listener" "alb_listener" {
   load_balancer_arn = aws_lb.alb_terra.arn
-  port              = "80"
+  port              = var.listener_port
   protocol          = "HTTP"
 
   default_action {
@@ -71,7 +71,7 @@ resource "aws_lb_listener" "alb_listener" {
 # ALB
 ###########################
 resource "aws_lb" "alb_terra" {
-  name               = "alb-terra"
+  name               = var.alb_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]

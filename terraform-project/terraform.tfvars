@@ -33,3 +33,10 @@ db_password = "nB59SGqLbFUlD4eh"
 
 notification_email = "05clvd43ax@gmail.com"
 
+alb_name = "terra-alb"
+
+waf_name = "aws-study-acl"
+
+waf_log_group_name = "aws-waf-logs-sample-webacl"
+
+alarm_name = "terraform-test-alarm"

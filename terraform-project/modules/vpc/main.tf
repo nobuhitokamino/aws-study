@@ -25,18 +25,6 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
 }
-# resource "aws_subnet" "public" {
-
-#   for_each = var.subnets
-
-#   vpc_id = aws_vpc.main.id
-
-#   cidr_block        = each.value.cidr
-#   availability_zone = each.value.az
-
-#   map_public_ip_on_launch = true
-
-# }
 
 #######################
 # private subnet

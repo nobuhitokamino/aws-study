@@ -2,7 +2,7 @@
 # WAF Web ACL
 #########################
 resource "aws_wafv2_web_acl" "aws_study_acl" {
-  name        = "aws-study-acl"
+  name        = var.waf_name
   description = "Example of a managed rule."
   scope       = "REGIONAL"
 
@@ -32,13 +32,6 @@ resource "aws_wafv2_web_acl" "aws_study_acl" {
     }
   }
 
-  # tags = {
-  #   Tag1 = "Value1"
-  #   Tag2 = "Value2"
-  # }
-
-  # token_domains = ["mywebsite.com", "myotherwebsite.com"]
-
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = "friendly-metric-name"
@@ -58,7 +51,7 @@ resource "aws_wafv2_web_acl_association" "example" {
 # WAF Log Group
 ###########################
 resource "aws_cloudwatch_log_group" "example" {
-  name = "aws-waf-logs-sample-webacl"
+  name = var.waf_log_group_name
 }
 
 ###########################

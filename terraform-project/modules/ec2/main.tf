@@ -1,82 +1,81 @@
-# data "aws_ami" "amazon_linux" {
+data "aws_ami" "amazon_linux" {
 
-#   most_recent = true
+  most_recent = true
 
-#   owners = ["amazon"]
+  owners = ["amazon"]
 
-#   filter {
-#     name   = "name"
-#     values = ["al2023-ami-*-x86_64"]
-#   }
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
 
-#   filter {
-#     name   = "virtualization-type"
-#     values = ["hvm"]
-#   }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
 
-# }
-# ############################
-# # Security Group
-# ############################
+}
+############################
+# Security Group
+############################
 
-# resource "aws_security_group" "web_sg" {
+resource "aws_security_group" "web_sg" {
 
-#   name   = "web-sg"
-#   vpc_id = var.vpc_id
+  name   = "web-sg"
+  vpc_id = var.vpc_id
 
-#   ingress {
+  ingress {
 
-#     from_port = 22
-#     to_port   = 22
-#     protocol  = "tcp"
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
 
-#     cidr_blocks = [var.my_ip]
+    cidr_blocks = [var.my_ip]
 
-#   }
+  }
 
-#   ingress {
+  ingress {
 
-#     from_port       = 8080
-#     to_port         = 8080
-#     protocol        = "tcp"
-#     security_groups = [var.alb_sg_id]
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    security_groups = [var.alb_sg_id]
 
-#   }
+  }
 
-#   egress {
+  egress {
 
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
 
-#   }
-# }
+  }
+}
 
-# ###########################
-# # EC2
-# ###########################
+###########################
+# EC2
+###########################
 
-# resource "aws_instance" "web" {
+resource "aws_instance" "web" {
 
-#   ami           = data.aws_ami.amazon_linux.id
-#   instance_type = var.instance_type
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = var.instance_type
 
-#   subnet_id = var.public_subnet_id
-#   key_name  = var.key_name
+  key_name = var.key_name
 
-#   vpc_security_group_ids = [
-#     aws_security_group.web_sg.id
-#   ]
+  vpc_security_group_ids = [
+    aws_security_group.web_sg.id
+  ]
 
-#   user_data = templatefile("${path.module}/userdata.sh", {
-#     rds_endpoint = var.rds_endpoint
-#     db_username  = var.db_username
-#     db_password  = var.db_password
-#   })
+  user_data = templatefile("${path.module}/userdata.sh", {
+    rds_endpoint = var.rds_endpoint
+    db_username  = var.db_username
+    db_password  = var.db_password
+  })
 
-#   tags = {
-#     Name = "terraform-ec2"
-#   }
+  tags = {
+    Name = "terraform-ec2"
+  }
 
-# }
+}
