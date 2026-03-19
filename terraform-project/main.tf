@@ -156,7 +156,7 @@ module "cloudwatch" {
   # instance_id        = module.ec2.instance_id
   asg_name           = module.asg.asg_name
   notification_email = var.notification_email
-  alarm_name         = var.alb_name
+  alarm_name         = var.alarm_name
   waf_name           = module.waf.web_acl_name
   waf_log_group_name = module.waf.waf_log_group_name
 }
