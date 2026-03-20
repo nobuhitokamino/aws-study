@@ -1,0 +1,79 @@
+############################
+# Security Group
+############################
+
+resource "aws_security_group" "alb_sg" {
+
+  name   = "alb-sg"
+  vpc_id = var.vpc_id
+
+  ingress {
+
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}
+###########################################
+# ALB attachment　EC2モジュールで作成する場合使用
+###########################################
+# resource "aws_lb_target_group_attachment" "alb_tg" {
+#   target_group_arn = aws_lb_target_group.alb_tg.arn
+#   target_id        = var.instance_id
+#   port             = 8080
+# }
+##########################  
+# TargetGroup
+###########################
+resource "aws_lb_target_group" "alb_tg" {
+  name     = "alb-tg"
+  port     = var.target_port
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+
+  health_check {
+
+    path                = "/"
+    port                = var.target_port
+    protocol            = "HTTP"
+    interval            = 10
+    timeout             = 5
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+
+  }
+
+}
+
+###########################
+# listener設定
+###########################
+resource "aws_lb_listener" "alb_listener" {
+  load_balancer_arn = aws_lb.alb_terra.arn
+  port              = var.listener_port
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb_tg.arn
+  }
+}
+###########################
+# ALB
+###########################
+resource "aws_lb" "alb_terra" {
+  name               = var.alb_name
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = var.subnet_ids
+}
